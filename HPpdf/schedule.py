@@ -140,7 +140,7 @@ class Schedule(canvas.Canvas):
         self.setFontSize(settings.HEADERS_FONT_SIZE)
         title_height = self.height - self._fontsize
         self.drawString(0, title_height, 'Emploi du temps GB1')
-        self.drawRightString(self.width, title_height, 'Semaine n° {:d} - {:d}'.format(year, week))
+        self.drawRightString(self.width, title_height, 'semaine n° {}'.format(week))
         self.drawCentredString(self.width/2., title_height, 'du {0:%d/%m/%y} au {1:%d/%m/%y}'.format(
             days[0],
             days[-1],
