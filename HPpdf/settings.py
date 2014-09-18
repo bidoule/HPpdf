@@ -2,6 +2,11 @@
 
 from reportlab.lib.units import cm
 
+# FILES
+INPUT_FILE_DEFAULT = "/run/user/1001/gvfs/smb-share:server=stockage,share=hamardpero/public_html/planning/cours.txt"
+OUTPUT_DIRECTORY_DEFAULT = "/run/user/1001/gvfs/smb-share:server=intranetiut,share=commun.gb/ENSEIGNEMENT/1ereAnnee/EduT-pdf/2014-2015/"
+
+
 ########## LESSON
 START_HOUR = 8
 END_HOUR = 19

@@ -6,6 +6,7 @@ import functools
 import logging
 import operator
 import re
+import sys
 
 from reportlab.lib import colors
 
@@ -14,6 +15,13 @@ import group_config
 
 
 logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler(sys.stdout)
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 class ParseError(Exception):
@@ -56,7 +64,6 @@ def parse_teacher(teacher):
 
 def parse_teachers(teachers):
     if not teachers:
-        logger.warning('No teacher')
         return []
     return [parse_teacher(teacher) for teacher in teachers.split(', ')]
 
@@ -161,13 +168,15 @@ def in_date(min_date, max_date, lesson):
 def parse_file(filename):
     d = collections.defaultdict(lambda: [])
     cms = collections.defaultdict(lambda: [])
+    errors = collections.defaultdict(lambda: 0)
     with open(filename, 'r') as fd:
         rd = csv.reader(fd, delimiter=';')
         for i, line in enumerate(rd):
             try:
                 lesson = Lesson(line, group_config)
             except ParseError as e:
-                logger.error('Parse error line {} - {} "{}" - {}'.format(i, e.field, e.arg, ';'.join(line)))
+                errors[e.field] += 1
+                logger.warning('{} "{}" - line {} - {}'.format(e.field, e.arg, i, ';'.join(line)))
             else:
                 d[lesson.iso_year_week].append(lesson)
                 if lesson.type == 'CM':
@@ -177,6 +186,9 @@ def parse_file(filename):
             lesson.number = i
     for val in d.values():
         val.sort(key=lambda x: x.sort_key)
+    if errors:
+        for field, number in errors.items():
+            logger.info('{} {} error(s)'.format(number, field))
     return d
 
 
