@@ -84,20 +84,6 @@ class Schedule(canvas.Canvas):
 
     def __init__(self, filename):
         super().__init__(filename, (self.PAGE_WIDTH, self.PAGE_HEIGHT))
-        self.translate(settings.MARGIN['left'], settings.MARGIN['bottom'])
-
-        #self.setStrokeColorRGB(1., 0., 0.)
-        #self.line(0, 0, self.width, 0)
-        #self.line(self.width, self.height, self.width, 0)
-        #self.line(0, self.height - settings.HEADERS_HEIGHT, self.width, self.height - settings.HEADERS_HEIGHT)
-        #self.line(self.width, self.height, 0, self.height)
-        #self.line(0, 0, 0, self.height)
-        #self.monday = first_day.strftime('%d/%m/%y')
-        #self.friday = self.days[-1].strftime('%d/%m/%y')
-
-    def showPage(self):
-        super().showPage()
-        self.translate(settings.MARGIN['left'], settings.MARGIN['bottom'])
 
     def drawString(self, x, y, *args, **kwargs):
         super().drawString(x+1., y+2., *args, **kwargs)
@@ -140,6 +126,7 @@ class Schedule(canvas.Canvas):
         self.line(self.table_left - settings.ROW_TITLE_WIDTH, y, self.table_right, y)
 
     def draw_grid(self, year, week, mtime):
+        self.translate(settings.MARGIN['left'], settings.MARGIN['bottom'])
         first_day = iso_to_gregorian(year, week, 1)
         days = [first_day + datetime.timedelta(days=i) for i in range(settings.DAYS)]
 
@@ -193,23 +180,22 @@ class Schedule(canvas.Canvas):
             t.setStyle(styles2['bottom_right'])
             t.wrapOn(self, width, height)
             t.drawOn(self, x, y)
-        #p = paragraph.Paragraph(lesson.top_left_caption)
-        #p.breakLines(width)
 
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('file')
+    parser.add_argument('file', nargs='?', default=settings.INPUT_FILE_DEFAULT)
+    parser.add_argument('output', nargs='?', default=settings.OUTPUT_DIRECTORY_DEFAULT)
     options = parser.parse_args()
 
     mtime = datetime.datetime.fromtimestamp(os.path.getmtime(options.file)).strftime('%Y/%m/%d %H:%M')
-    s = Schedule("output/test.pdf")
+    s = Schedule(os.path.join(options.output, "2014_2015.pdf"))
     lessons = lesson.parse_file(options.file)
     d = collections.defaultdict
     for (year, week), lesson_list in sorted(lessons.items()):
-        ss = Schedule("output/edt_{0}_{1}.pdf".format(year, week))
-        ss.draw_grid(2014, 35, mtime)
+        ss = Schedule(os.path.join(options.output, "S{}.pdf".format(week)))
+        ss.draw_grid(year, week, mtime)
         s.draw_grid(year, week, mtime)
         for lesson in lesson_list:
             s.draw_lesson(lesson)
