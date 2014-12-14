@@ -11,9 +11,9 @@ CONFIG = {
     '<Adaptation> Ada 3': Group('Ada 3', [(1, 4)]),
     '<Adaptation> Ada 4': Group('Ada 4', [(5, 9)]),
     
-    '<OPTIONS> ABB': Group('ABB', [(1, 3)]),
-    '<OPTIONS> Agro': Group('Agro', [(4, 5)]),
-    '<OPTIONS> GE': Group('GE', [(6,9)]),
+    '<OPTIONS> ABB': Group('ABB', [(1, 4)]),
+    '<OPTIONS> Agro': Group('Agro', [(5, 6)]),
+    '<OPTIONS> GE': Group('GE', [(7,9)]),
     
     '<TP S1> TP 1': Group('TP 1', [(1, 1)]),
     '<TP S1> TP 2': Group('TP 2', [(2, 2)]),
